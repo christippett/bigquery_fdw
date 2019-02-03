@@ -41,8 +41,8 @@ class BqClient:
         """
 
         if self.client:
-                # Prepare job configuration
-                job_config = bigquery.QueryJobConfig()
+            # Prepare job configuration
+            job_config = bigquery.QueryJobConfig()
             job_config.dry_run = dryRun
             job_config.use_legacy_sql = sqlDialect == 'legacy'
 
@@ -50,7 +50,7 @@ class BqClient:
                 job_config.query_parameters = parameters
 
                 self.queryJob = self.client.query(
-                query, job_config=job_config, location=location)
+                    query, job_config=job_config, location=location)
 
         else:
             raise RuntimeError(
