@@ -3,6 +3,7 @@ from unittest.mock import patch
 import datetime
 
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
 from ..bqclient import BqClient
 
@@ -60,6 +61,13 @@ class Test(unittest.TestCase):
 
     def test_runQuery_3(self):
         self.assertRaises(RuntimeError, self.bc.runQuery, self.query)
+
+    def test_runQuery_dryRun(self):
+        self.bc.setClient(self.key)
+        self.bc.runQuery(self.query, dryRun=True)
+
+        # No job/results should exist for a dry run query
+        self.assertRaises(NotFound, self.bc.readResult)
 
     def test_readResult(self):
         self.bc.setClient(self.key)
