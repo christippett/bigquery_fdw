@@ -18,5 +18,6 @@ CREATE FOREIGN TABLE usa_names (
 OPTIONS (
     fdw_dataset 'bigquery-public-data.usa_names',
     fdw_table 'usa_1910_current',
-    fdw_key '/opt/key/key.json'
+    fdw_key '/opt/key/key.json',
+    fdw_limit '1000' -- limit query on BigQuery (useful for testing)
 );

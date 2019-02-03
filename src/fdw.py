@@ -45,6 +45,7 @@ class ConstantForeignDataWrapper(ForeignDataWrapper):
             self.dataset = options['fdw_dataset']
             self.table = options['fdw_table']
             self.convertToTz = options.get('fdw_convert_tz')
+            self.limit = options.get('fdw_limit')
 
             # Set verbose option
             self.setOptionVerbose(options.get('fdw_verbose'))
@@ -268,6 +269,9 @@ class ConstantForeignDataWrapper(ForeignDataWrapper):
             if groupByColumns:
                 query += ' GROUP BY ' + \
                     self.buildColumnList(columns, 'GROUP_BY')
+
+        if self.limit:
+            query += 'LIMIT ' + self.limit
 
         # Verbose log
         if self.verbose:
