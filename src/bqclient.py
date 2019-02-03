@@ -35,28 +35,22 @@ class BqClient:
 
         return self.client
 
-    def runQuery(self, query, parameters=[], sqlDialect='standard'):
+    def runQuery(self, query, parameters=[], sqlDialect='standard', location=None, dryRun=False):
         """
             Run BigQuery query
         """
 
         if self.client:
-            if parameters:  # Parameterized query
                 # Prepare job configuration
                 job_config = bigquery.QueryJobConfig()
+            job_config.dry_run = dryRun
+            job_config.use_legacy_sql = sqlDialect == 'legacy'
+
+            if parameters:  # Parameterized query
                 job_config.query_parameters = parameters
 
                 self.queryJob = self.client.query(
-                    query, job_config=job_config, location=None)
-            else:  # Non parameterized query
-                self.queryJob = self.client.query(query, location=None)
-
-            # Set SQL dialect
-            self.queryJob.UseLegacySQL = False
-            # if sqlDialect == 'legacy':
-            #     self.queryJob.UseLegacySQL = True
-            # else:
-            #     self.queryJob.UseLegacySQL = False
+                query, job_config=job_config, location=location)
 
         else:
             raise RuntimeError(

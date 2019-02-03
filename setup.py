@@ -20,6 +20,7 @@ setup(
     # external dependencies
     install_requires=[
         'argparse',
+        'humanize',
         'google-cloud-bigquery==1.3.0',
         'google-auth==1.5.0',
         'google-auth-oauthlib==0.2.0',

@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from collections import namedtuple
 
+import humanize
 from multicorn import ForeignDataWrapper
 from multicorn.utils import log_to_postgres, ERROR, WARNING, INFO, DEBUG
 
@@ -46,6 +47,7 @@ class ConstantForeignDataWrapper(ForeignDataWrapper):
             self.table = options['fdw_table']
             self.convertToTz = options.get('fdw_convert_tz')
             self.limit = options.get('fdw_limit')
+            self.location = options.get('location')
 
             # Set verbose option
             self.setOptionVerbose(options.get('fdw_verbose'))
@@ -232,8 +234,14 @@ class ConstantForeignDataWrapper(ForeignDataWrapper):
         # Prepare query
         query, parameters = self.buildQuery(quals, columns)
 
+        # Verbose log
+        if self.verbose:
+            self.bq.runQuery(query, parameters, self.dialect, location=self.location, dryRun=True)
+            query_size = humanize.naturalsize(self.bq.queryJob.total_bytes_processed)
+            log_to_postgres("This query will process {} when run".format(query_size), INFO)
+
         # Run query
-        self.bq.runQuery(query, parameters, self.dialect)
+        self.bq.runQuery(query, parameters, self.dialect, location=self.location)
 
         # Return query output
         for row in self.bq.readResult():
