@@ -49,8 +49,8 @@ class BqClient:
             if parameters:  # Parameterized query
                 job_config.query_parameters = parameters
 
-                self.queryJob = self.client.query(
-                    query, job_config=job_config, location=location)
+            self.queryJob = self.client.query(
+                query, job_config=job_config, location=location)
 
         else:
             raise RuntimeError(
